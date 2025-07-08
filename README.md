@@ -1,5 +1,3 @@
-Absolutely! Here’s your **README.md** with fun and relevant emojis to make it stand out and feel welcoming:
-
 # 🚀 Employee Work Hours Dashboard ⏰
 
 A web application for tracking employee work sessions, built with **HTML, CSS, JavaScript, and Firebase**.  
