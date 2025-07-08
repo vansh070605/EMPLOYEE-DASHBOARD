@@ -379,3 +379,31 @@ td {
   box-shadow: 0 2px 8px rgba(30,41,59,0.08);
   text-align: center;
 }
+
+#timer-section input[type="text"] {
+  display: block;
+  width: 90%;
+  max-width: 350px;
+  margin: 0.7rem auto 0.2rem auto;
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 6px;
+  outline: none;
+  background: #f8fafc;
+  color: #1e293b;
+  transition: border 0.2s;
+  box-sizing: border-box;
+}
+
+#timer-section input[type="text"]:focus {
+  border-color: #2563eb;
+  background: #fff;
+}
+
+#timer-section input[type="text"]::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+  font-size: 0.98rem;
+}
+

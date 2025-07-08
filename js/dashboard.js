@@ -67,12 +67,18 @@ endBtn.onclick = async () => {
   const endTime = new Date();
   const duration = new Date(endTime - startTime).toISOString().substr(11, 8);
 
+  // Get tag and note values
+  const tag = document.getElementById('sessionTag').value.trim();
+  const note = document.getElementById('sessionNote').value.trim();
+
   // Save to Firestore
   await addDoc(collection(db, "sessions"), {
     employeeId: currentUser.uid,
     start: startTime.toISOString(),
     end: endTime.toISOString(),
-    duration: duration
+    duration: duration,
+    tag: tag,
+    note: note
   });
 
   startBtn.disabled = false;
@@ -80,6 +86,11 @@ endBtn.onclick = async () => {
   elapsed = 0;
   updateCircularTimerDisplay(elapsed);
   progressCircle.setAttribute('stroke-dashoffset', CIRCUMFERENCE);
+
+  // Clear tag and note inputs
+  document.getElementById('sessionTag').value = "";
+  document.getElementById('sessionNote').value = "";
+
   loadSessions();
 };
 
@@ -99,6 +110,8 @@ async function loadSessions() {
       <td>${formatDateTime(data.start)}</td>
       <td>${formatDateTime(data.end)}</td>
       <td>${data.duration}</td>
+      <td>${data.tag || ''}</td>
+      <td>${data.note || ''}</td>
     `;
     tableBody.appendChild(row);
   });
