@@ -41,8 +41,8 @@ employee-dashboard/
 
 ### 1. **Clone the Repository**
 ```bash
-git clone https://github.com/yourusername/employee-dashboard.git
-cd employee-dashboard
+git clone https://github.com/vansh070605/EMPLOYEE-DASHBOARD.git
+cd EMPLOYEE-DASHBOARD
 ```
 
 ### 2. **Firebase Setup**
@@ -84,15 +84,9 @@ Then open `pages/signup.html` or `pages/login.html` in your browser.
 - 🔥 [Firebase Authentication](https://firebase.google.com/docs/auth)
 - 🔥 [Firebase Firestore](https://firebase.google.com/docs/firestore)
 
-## 📸 Screenshots
-
-_Add screenshots of the login page, employee dashboard, and admin dashboard here._
-
 ## 📄 License
 
 [MIT](LICENSE)  
 Feel free to use and modify for your organization!
 
 **Contributions and suggestions are welcome!** 🎉
-
-Let me know if you want to add more emojis or details!
