@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Employee Dashboard</title>
   <link rel="stylesheet" href="../css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
   <div id="dashboard">
@@ -23,6 +25,12 @@
   </svg>
   <div class="timer-label" id="timerLabel">00:00:00</div>
 </div>
+
+<div class="analytics-section">
+  <h2>Analytics</h2>
+  <canvas id="hoursChart" width="600" height="300"></canvas>
+</div>
+
 
 </div>
 
@@ -45,5 +53,7 @@
     </div>
   </div>
   <script type="module" src="../js/dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>
