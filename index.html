@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Work Hours Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="timer-section">
+    <button id="startBtn">Start Session</button>
+    <button id="endBtn" disabled>End Session</button>
+    <div id="timerDisplay">00:00:00</div>
+  </div>
+
+  <div id="admin-section">
+    <h2>Session Logs</h2>
+    <!-- Responsive table wrapper for horizontal scroll on small screens -->
+    <div class="table-wrapper">
+      <table id="sessionTable">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Duration</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Session rows will be injected here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
