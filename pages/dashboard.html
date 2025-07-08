@@ -15,45 +15,42 @@
   <button id="logoutBtn" class="logout-btn">Logout</button>
 </div>
 
-    <div id="timer-section">
+<div id="timer-section">
   <button id="startBtn">Start Session</button>
   <button id="endBtn" disabled>End Session</button>
   <div class="circular-timer">
-  <svg class="progress-ring" width="220" height="220">
-    <circle class="progress-ring__background" cx="110" cy="110" r="100" />
-    <circle class="progress-ring__circle" cx="110" cy="110" r="100" />
-  </svg>
-  <div class="timer-label" id="timerLabel">00:00:00</div>
+      <svg class="progress-ring" width="220" height="220">
+        <circle class="progress-ring__background" cx="110" cy="110" r="100" />
+        <circle class="progress-ring__circle" cx="110" cy="110" r="100" />
+      </svg>
+    <div class="timer-label" id="timerLabel">00:00:00</div>
+  </div>
+
+  <div class="analytics-section">
+    <h2>Analytics</h2>
+    <canvas id="hoursChart" width="600" height="300"></canvas>
+  </div>
 </div>
 
-<div class="analytics-section">
-  <h2>Analytics</h2>
-  <canvas id="hoursChart" width="600" height="300"></canvas>
-</div>
-
-
-</div>
-
-    <div id="admin-section">
-      <h2>Your Session Logs</h2>
-      <div class="table-wrapper">
-        <table id="sessionTable">
-          <thead>
-            <tr>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Session rows will be injected here -->
-          </tbody>
-        </table>
-      </div>
+<div id="admin-section">
+  <h2>Your Session Logs</h2>
+    <div class="table-wrapper">
+      <table id="sessionTable">
+        <thead>
+          <tr>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+         <!-- Session rows will be injected here -->
+       </tbody>
+     </table>
     </div>
   </div>
-  <script type="module" src="../js/dashboard.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+</div>
+<script type="module" src="../js/dashboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
