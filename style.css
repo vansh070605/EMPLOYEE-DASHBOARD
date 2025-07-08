@@ -210,3 +210,140 @@ td {
   }
 }
 
+.auth-container {
+  max-width: 370px;
+  margin: 4rem auto;
+  padding: 2rem 2.2rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(30,41,59,0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.auth-container h2 {
+  margin-bottom: 1.2rem;
+  color: var(--primary, #2563eb);
+}
+.auth-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.auth-container input {
+  padding: 0.7rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+.auth-container input:focus {
+  border-color: var(--primary, #2563eb);
+}
+.auth-container button {
+  background: var(--primary, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.auth-container button:hover {
+  background: #1d4ed8;
+}
+.auth-container p {
+  margin-top: 1rem;
+  font-size: 0.97rem;
+}
+.auth-container a {
+  color: var(--primary, #2563eb);
+  text-decoration: none;
+  font-weight: 500;
+}
+.error {
+  color: #dc2626;
+  font-size: 0.95rem;
+  margin-top: -0.5rem;
+  min-height: 1.2em;
+}
+@media (max-width: 500px) {
+  .auth-container {
+    margin: 1.5rem 0.5rem;
+    padding: 1rem;
+  }
+}
+
+.circular-timer {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 1.2rem auto 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progress-ring {
+  transform: rotate(-90deg);
+}
+.progress-ring__background {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 10;
+}
+.progress-ring__circle {
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s linear;
+}
+.timer-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.6rem; /* Increase if you want the time even bigger */
+  font-weight: bold;
+  color: #2563eb;
+  letter-spacing: 2px;
+  pointer-events: none;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center by default */
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-header h2 {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--primary, #2563eb);
+}
+
+.logout-btn {
+  position: absolute;
+  right: 0;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.65rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #b91c1c;
+}

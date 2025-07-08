@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Employee Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" required placeholder="Email" autocomplete="username" />
+      <input type="password" id="loginPassword" required placeholder="Password" autocomplete="current-password" />
+      <button type="submit">Login</button>
+      <div id="loginError" class="error"></div>
+    </form>
+    <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+  </div>
+  <script type="module" src="login.js"></script>
+</body>
+</html>
