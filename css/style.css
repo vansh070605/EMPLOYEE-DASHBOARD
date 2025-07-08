@@ -347,3 +347,25 @@ td {
 .logout-btn:hover {
   background: #b91c1c;
 }
+
+
+.admin-banner {
+  background: var(--primary, #2563eb);
+  color: #fff;
+  padding: 1.2rem 2rem 1rem 2rem;
+  border-radius: 10px;
+  margin: 2rem auto 1.5rem auto;
+  max-width: 900px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(30,41,59,0.08);
+}
+.admin-banner h1 {
+  margin: 0 0 0.3em 0;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+.admin-banner p {
+  margin: 0;
+  font-size: 1.08rem;
+  color: #e0e7ff;
+}

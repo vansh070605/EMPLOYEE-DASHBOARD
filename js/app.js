@@ -1,11 +1,21 @@
 import { db } from './firebase-config.js';
-import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { collection, addDoc, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+// Delete session
 async function deleteSession(docId) {
   await deleteDoc(doc(db, "sessions", docId));
 }
 
+// Fetch all users and build a UID→name map
+async function getUserMap() {
+  const usersSnapshot = await getDocs(collection(db, "users"));
+  const userMap = {};
+  usersSnapshot.forEach((doc) => {
+    const data = doc.data();
+    userMap[doc.id] = data.name || data.email || doc.id;
+  });
+  return userMap;
+}
 
 let startTime, timerInterval;
 
@@ -44,23 +54,26 @@ endBtn.onclick = async () => {
   loadSessions(); // Refresh session logs
 };
 
-// Load sessions into the table
+// Load sessions into the table with employee names
 async function loadSessions() {
   const tableBody = document.querySelector('#sessionTable tbody');
   tableBody.innerHTML = "";
+
+  // Get UID→name map
+  const userMap = await getUserMap();
+
   const querySnapshot = await getDocs(collection(db, "sessions"));
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const employeeName = userMap[data.employeeId] || data.employeeId;
     const row = document.createElement('tr');
     row.innerHTML = `
-  <td data-label="Employee">${data.employeeId}</td>
-  <td data-label="Start Time">${formatDateTime(data.start)}</td>
-  <td data-label="End Time">${formatDateTime(data.end)}</td>
-  <td data-label="Duration">${data.duration}</td>
-  <td data-label="Action"><button class="deleteBtn" data-id="${doc.id}">Delete</button></td>
-`;
-
-
+      <td data-label="Employee">${employeeName}</td>
+      <td data-label="Start Time">${formatDateTime(data.start)}</td>
+      <td data-label="End Time">${formatDateTime(data.end)}</td>
+      <td data-label="Duration">${data.duration}</td>
+      <td data-label="Action"><button class="deleteBtn" data-id="${docSnap.id}">Delete</button></td>
+    `;
     tableBody.appendChild(row);
   });
 
@@ -86,8 +99,6 @@ function formatDateTime(isoString) {
     hour12: true
   });
 }
-
-
 
 // Initial load
 loadSessions();
