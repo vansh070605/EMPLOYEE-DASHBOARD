@@ -102,8 +102,8 @@ async function loadSessions() {
   const sessions = [];
   const q = query(collection(db, "sessions"), where("employeeId", "==", currentUser.uid));
   const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
     sessions.push({ ...data, employeeId: currentUser.uid });
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -116,11 +116,9 @@ async function loadSessions() {
     tableBody.appendChild(row);
   });
 
-  // For this user's analytics, use their name
-  const userMap = {};
-  userMap[currentUser.uid] = document.getElementById('userEmail').textContent;
-  const totals = aggregateHours(sessions, userMap);
-  renderHoursChart(totals);
+  // Day-wise analytics
+  const totalsByDay = aggregateHoursByDay(sessions);
+  renderDayWiseChart(totalsByDay);
 }
 
 // Format date/time for display
@@ -136,24 +134,25 @@ function formatDateTime(isoString) {
   });
 }
 
-// Aggregate total hours for analytics chart
-function aggregateHours(sessions, userMap) {
+// Aggregate total hours per day for analytics chart
+function aggregateHoursByDay(sessions) {
   const totals = {};
   sessions.forEach((session) => {
-    const name = userMap[session.employeeId] || session.employeeId;
-    if (!session.duration) return; // Skip if no duration
+    if (!session.duration || !session.start) return;
+    // Get date string (YYYY-MM-DD)
+    const dateStr = new Date(session.start).toISOString().slice(0, 10);
     // Parse duration as "hh:mm:ss"
     const parts = session.duration.split(':').map(Number);
-    if (parts.length !== 3 || parts.some(isNaN)) return; // Skip malformed
+    if (parts.length !== 3 || parts.some(isNaN)) return;
     const [h, m, s] = parts;
     const hours = h + m / 60 + s / 3600;
-    totals[name] = (totals[name] || 0) + hours;
+    totals[dateStr] = (totals[dateStr] || 0) + hours;
   });
   return totals;
 }
 
-// Render the Chart.js bar chart
-function renderHoursChart(totals) {
+// Render the Chart.js line chart (day-wise)
+function renderDayWiseChart(totals) {
   const ctx = document.getElementById('hoursChart').getContext('2d');
 
   // Destroy existing chart instance if any to avoid duplicates
@@ -161,23 +160,25 @@ function renderHoursChart(totals) {
     window.hoursChartInstance.destroy();
   }
 
-  const labels = Object.keys(totals);
-  const dataValues = Object.values(totals);
+  const labels = Object.keys(totals).sort(); // Sort dates for correct order
+  const dataValues = labels.map(date => totals[date]);
 
-  // Handle empty data case
   if (labels.length === 0) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     return;
   }
 
   window.hoursChartInstance = new Chart(ctx, {
-    type: 'bar',
+    type: 'line',
     data: {
       labels: labels,
       datasets: [{
-        label: 'Total Hours Worked (This Month)',
+        label: 'Total Hours Worked (Per Day)',
         data: dataValues,
-        backgroundColor: '#2563eb'
+        backgroundColor: '#2563eb',
+        borderColor: '#2563eb',
+        fill: false,
+        tension: 0.2
       }]
     },
     options: {
@@ -190,6 +191,9 @@ function renderHoursChart(totals) {
         y: {
           beginAtZero: true,
           title: { display: true, text: 'Hours' }
+        },
+        x: {
+          title: { display: true, text: 'Date' }
         }
       }
     }
