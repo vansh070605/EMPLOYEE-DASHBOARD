@@ -105,6 +105,13 @@ async function loadSessions() {
   querySnapshot.forEach((docSnap) => {
     const data = docSnap.data();
     sessions.push({ ...data, employeeId: currentUser.uid });
+  });
+
+  // Sort sessions by start date descending (latest first)
+  sessions.sort((a, b) => new Date(b.start) - new Date(a.start));
+
+  // Render sorted sessions
+  sessions.forEach((data) => {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${formatDateTime(data.start)}</td>
@@ -120,6 +127,7 @@ async function loadSessions() {
   const totalsByDay = aggregateHoursByDay(sessions);
   renderDayWiseChart(totalsByDay);
 }
+
 
 // Format date/time for display
 function formatDateTime(isoString) {

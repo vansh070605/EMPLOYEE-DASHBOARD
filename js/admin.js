@@ -1,44 +1,68 @@
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "auth.html";
-    return;
-  }
-  const userDoc = await getDoc(doc(db, "users", user.uid));
-  if (userDoc.data().role !== "admin") {
-    window.location.href = "auth.html";
-  }
-  // ...load all users and all session logs
-});
+import { db } from './firebase-config.js';
+import { collection, getDocs, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const startBtn = document.getElementById('startBtn');
-const endBtn = document.getElementById('endBtn');
-const timerDisplay = document.getElementById('timerDisplay');
+// Directly load all session logs for public viewing
+loadSessions();
 
-if (startBtn && endBtn && timerDisplay) {
-  // Only run timer logic if timer elements exist
-  let startTime, timerInterval;
+// Fetch all users and build a UID→name map
+async function getUserMap() {
+  const usersSnapshot = await getDocs(collection(db, "users"));
+  const userMap = {};
+  usersSnapshot.forEach((doc) => {
+    const data = doc.data();
+    userMap[doc.id] = data.name || data.email || doc.id;
+  });
+  return userMap;
+}
 
-  startBtn.onclick = () => {
-    startTime = new Date();
-    timerInterval = setInterval(() => {
-      const now = new Date();
-      const diff = now - startTime;
-      timerDisplay.textContent = new Date(diff).toISOString().substr(11, 8);
-    }, 1000);
-    startBtn.disabled = true;
-    endBtn.disabled = false;
-  };
+// Load all sessions into the table with employee names
+async function loadSessions() {
+  const tableBody = document.querySelector('#sessionTable tbody');
+  tableBody.innerHTML = "";
 
-  endBtn.onclick = async () => {
-    clearInterval(timerInterval);
-    const endTime = new Date();
-    const duration = new Date(endTime - startTime).toISOString().substr(11, 8);
+  const userMap = await getUserMap();
+  const sessionsSnapshot = await getDocs(collection(db, "sessions"));
+  const sessions = [];
+  sessionsSnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    sessions.push({ id: docSnap.id, ...data });
+  });
 
-    // Save to Firestore (add your logic here)
+  // Sort sessions by start time (latest first)
+  sessions.sort((a, b) => new Date(b.start) - new Date(a.start));
 
-    startBtn.disabled = false;
-    endBtn.disabled = true;
-    timerDisplay.textContent = "00:00:00";
-    loadSessions();
-  };
+  sessions.forEach((data) => {
+    const employeeName = userMap[data.employeeId] || data.employeeId;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td data-label="Employee">${employeeName}</td>
+      <td data-label="Start Time">${formatDateTime(data.start)}</td>
+      <td data-label="End Time">${formatDateTime(data.end)}</td>
+      <td data-label="Duration">${data.duration}</td>
+      <td data-label="Action"><button class="deleteBtn" data-id="${data.id}">Delete</button></td>
+    `;
+    tableBody.appendChild(row);
+  });
+
+  // Attach delete event listeners
+  document.querySelectorAll('.deleteBtn').forEach(btn => {
+    btn.onclick = async function() {
+      const docId = this.getAttribute('data-id');
+      await deleteDoc(doc(db, "sessions", docId));
+      loadSessions(); // Refresh the table
+    };
+  });
+}
+
+function formatDateTime(isoString) {
+  if (!isoString) return "";
+  const date = new Date(isoString);
+  return date.toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
 }

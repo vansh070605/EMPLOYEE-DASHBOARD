@@ -408,3 +408,139 @@ td {
   font-size: 0.98rem;
 }
 
+/* General body and container adjustments */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  background: var(--background, #f8fafc);
+  color: var(--text, #1e293b);
+}
+
+/* Dashboard container */
+#dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.2rem 1rem;
+}
+
+/* Responsive header */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.dashboard-header h2 {
+  flex: 1 1 100%;
+  text-align: center;
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+}
+.logout-btn, .theme-toggle-btn {
+  margin: 0.5rem 0 0.5rem 0.5rem;
+}
+
+/* Timer section and analytics */
+#timer-section, .analytics-section, .leave-request-section, .attendance-calendar-section {
+  width: 100%;
+  max-width: 100%;
+  margin: 1rem auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Circular timer responsiveness */
+.circular-timer {
+  width: 100%;
+  max-width: 220px;
+  margin: 1rem auto;
+}
+
+/* Inputs and buttons */
+#timer-section input[type="text"], #timer-section input[type="date"], #leaveReason, #leaveDate {
+  width: 100%;
+  max-width: 350px;
+  margin: 0.5rem auto;
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1.5px solid #e5e7eb;
+  box-sizing: border-box;
+  display: block;
+}
+
+/* Table responsiveness */
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+#sessionTable, #leaveTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+#sessionTable th, #sessionTable td, #leaveTable th, #leaveTable td {
+  padding: 0.7em 0.5em;
+  text-align: center;
+  font-size: 1rem;
+}
+
+/* Responsive calendar */
+.attendance-calendar {
+  width: 100%;
+  min-width: 320px;
+}
+
+/* Responsive analytics chart */
+.analytics-section canvas {
+  width: 100% !important;
+  max-width: 100%;
+  height: auto !important;
+}
+
+/* Buttons */
+button, .logout-btn, .theme-toggle-btn {
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  margin: 0.5rem 0.2rem;
+  cursor: pointer;
+  background: var(--primary, #2563eb);
+  color: #fff;
+  transition: background 0.2s;
+}
+button:active, .logout-btn:active, .theme-toggle-btn:active {
+  background: #1d4ed8;
+}
+
+/* Media Queries for Mobile */
+@media (max-width: 600px) {
+  #dashboard {
+    padding: 0.5rem;
+  }
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dashboard-header h2 {
+    font-size: 1rem;
+  }
+  .circular-timer {
+    max-width: 160px;
+  }
+  .analytics-section, .leave-request-section, .attendance-calendar-section {
+    padding: 0.5rem;
+  }
+  #sessionTable, #leaveTable {
+    min-width: 400px;
+    font-size: 0.95rem;
+  }
+  #timer-section input[type="text"], #timer-section input[type="date"] {
+    font-size: 0.98rem;
+    max-width: 100%;
+  }
+}
