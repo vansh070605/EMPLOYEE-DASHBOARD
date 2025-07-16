@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,16 +40,98 @@
     <!-- Main Dashboard -->
     <div id="dashboard" class="dashboard" style="display: none;">
         <header class="dashboard-header">
-            <h1>Task Dashboard</h1>
+            <div class="header-left">
+                <h1>Task Dashboard</h1>
+            </div>
             <div class="header-actions">
                 <span id="userWelcome"></span>
+                
+                <!-- Theme Selector -->
+                <div class="theme-selector">
+                    <select id="themeSelect">
+                        <option value="default">Default</option>
+                        <option value="corporate">Corporate Blue</option>
+                        <option value="nature">Nature Green</option>
+                        <option value="sunset">Sunset Orange</option>
+                    </select>
+                </div>
+
+                <!-- View Toggle -->
+                <div class="view-toggle">
+                    <div class="view-buttons">
+                        <button class="view-btn active" data-view="grid" title="Grid View">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </button>
+                        <button class="view-btn" data-view="list" title="List View">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6"></line>
+                                <line x1="8" y1="12" x2="21" y2="12"></line>
+                                <line x1="8" y1="18" x2="21" y2="18"></line>
+                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                            </svg>
+                        </button>
+                        <button class="view-btn" data-view="timeline" title="Timeline View">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12,6 12,12 16,14"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dark Mode Toggle -->
+                <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                    <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"></path>
+                    </svg>
+                    <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+
+                <!-- Layout Edit Button (Admin Only) -->
+                <button id="editLayoutBtn" class="btn btn-primary" style="display: none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit Layout
+                </button>
+
                 <button id="addTaskBtn" class="btn btn-primary" style="display: none;">+ Add Task</button>
                 <button id="logoutBtn" class="btn btn-secondary">Logout</button>
             </div>
         </header>
 
-        <div class="kanban-board">
-            <div class="kanban-column">
+        <!-- Layout Edit Controls (Hidden by default) -->
+        <div id="editControls" class="edit-controls" style="display: none;">
+            <div class="edit-toolbar">
+                <div class="edit-section">
+                    <label>Columns:</label>
+                    <button class="edit-btn" id="removeColumn">-</button>
+                    <span id="columnCount">3</span>
+                    <button class="edit-btn" id="addColumn">+</button>
+                </div>
+                <div class="edit-section">
+                    <button class="edit-btn" id="resetLayout">Reset Layout</button>
+                </div>
+                <div class="edit-section">
+                    <button class="edit-btn primary" id="saveLayout">Save Changes</button>
+                    <button class="edit-btn secondary" id="cancelEdit">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="kanban-board kanban-grid" id="kanbanBoard">
+            <div class="kanban-column" data-status="assigned">
                 <div class="column-header">
                     <h3>Assigned</h3>
                     <span class="task-count" id="assignedCount">0</span>
@@ -57,7 +139,7 @@
                 <div class="task-list" id="assignedTasks"></div>
             </div>
 
-            <div class="kanban-column">
+            <div class="kanban-column" data-status="in_progress">
                 <div class="column-header">
                     <h3>In Progress</h3>
                     <span class="task-count" id="inProgressCount">0</span>
@@ -65,7 +147,7 @@
                 <div class="task-list" id="inProgressTasks"></div>
             </div>
 
-            <div class="kanban-column">
+            <div class="kanban-column" data-status="completed">
                 <div class="column-header">
                     <h3>Completed</h3>
                     <span class="task-count" id="completedCount">0</span>

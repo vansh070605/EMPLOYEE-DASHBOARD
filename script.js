@@ -4,6 +4,53 @@ document.addEventListener('DOMContentLoaded', () => {
     let isAdmin = false;
     let tasks = [];
     let employees = [];
+    let currentUserData = null;
+    let currentView = localStorage.getItem('viewMode') || 'grid';
+    let editMode = false;
+    let currentLayout = {
+        columns: 3,
+        columnWidths: [1, 1, 1]
+    };
+
+    // Theme Configuration
+    const themes = {
+        default: {
+            name: 'Default',
+            primary: '#667eea',
+            secondary: '#764ba2',
+            accent: '#f093fb',
+            success: '#4ade80',
+            warning: '#fbbf24',
+            danger: '#f87171'
+        },
+        corporate: {
+            name: 'Corporate Blue',
+            primary: '#2563eb',
+            secondary: '#1e40af',
+            accent: '#3b82f6',
+            success: '#10b981',
+            warning: '#f59e0b',
+            danger: '#ef4444'
+        },
+        nature: {
+            name: 'Nature Green',
+            primary: '#059669',
+            secondary: '#047857',
+            accent: '#34d399',
+            success: '#10b981',
+            warning: '#f59e0b',
+            danger: '#ef4444'
+        },
+        sunset: {
+            name: 'Sunset Orange',
+            primary: '#ea580c',
+            secondary: '#c2410c',
+            accent: '#fb923c',
+            success: '#22c55e',
+            warning: '#eab308',
+            danger: '#ef4444'
+        }
+    };
 
     // DOM elements
     const authModal = document.getElementById('authModal');
@@ -28,11 +75,178 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelTaskBtn = document.getElementById('cancelTaskBtn');
     const taskForm = document.getElementById('taskForm');
     const taskAssignee = document.getElementById('taskAssignee');
+    const kanbanBoard = document.getElementById('kanbanBoard');
 
     // Alias Firebase utilities
     const { auth, db, firestore, authFunctions } = window.firebase;
     const { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } = authFunctions;
     const { collection, addDoc, updateDoc, doc, query, where, onSnapshot, setDoc, getDoc, orderBy } = firestore;
+
+    // Theme Management
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        // Apply saved custom theme
+        const savedCustomTheme = localStorage.getItem('selectedTheme') || 'default';
+        applyTheme(savedCustomTheme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    }
+
+    function applyTheme(themeName) {
+        const theme = themes[themeName];
+        if (!theme) return;
+        
+        const root = document.documentElement;
+        root.style.setProperty('--primary-color', theme.primary);
+        root.style.setProperty('--secondary-color', theme.secondary);
+        root.style.setProperty('--accent-color', theme.accent);
+        root.style.setProperty('--success-color', theme.success);
+        root.style.setProperty('--warning-color', theme.warning);
+        root.style.setProperty('--danger-color', theme.danger);
+        
+        localStorage.setItem('selectedTheme', themeName);
+    }
+
+    // View Management
+    function switchView(viewMode) {
+        currentView = viewMode;
+        localStorage.setItem('viewMode', viewMode);
+        
+        // Update active button
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-view="${viewMode}"]`).classList.add('active');
+        
+        // Apply view-specific CSS
+        kanbanBoard.className = `kanban-board kanban-${viewMode}`;
+        
+        // Re-render tasks with new view
+        renderTasks();
+    }
+
+    // Layout Management
+    function enterEditMode() {
+        editMode = true;
+        document.body.classList.add('edit-mode');
+        document.getElementById('editControls').style.display = 'block';
+        document.getElementById('editLayoutBtn').textContent = 'Exit Edit';
+        
+        // Make columns draggable/resizable
+        kanbanBoard.classList.add('edit-mode');
+    }
+
+    function exitEditMode() {
+        editMode = false;
+        document.body.classList.remove('edit-mode');
+        document.getElementById('editControls').style.display = 'none';
+        document.getElementById('editLayoutBtn').textContent = 'Edit Layout';
+        
+        kanbanBoard.classList.remove('edit-mode');
+        updateColumnCount();
+    }
+
+    function addColumn() {
+        if (currentLayout.columns < 5) {
+            currentLayout.columns++;
+            currentLayout.columnWidths.push(1);
+            updateColumnCount();
+            updateLayoutDisplay();
+        }
+    }
+
+    function removeColumn() {
+        if (currentLayout.columns > 1) {
+            currentLayout.columns--;
+            currentLayout.columnWidths.pop();
+            updateColumnCount();
+            updateLayoutDisplay();
+        }
+    }
+
+    function updateColumnCount() {
+        document.getElementById('columnCount').textContent = currentLayout.columns;
+    }
+
+    function updateLayoutDisplay() {
+        if (currentView === 'grid') {
+            kanbanBoard.style.gridTemplateColumns = `repeat(${currentLayout.columns}, 1fr)`;
+        }
+    }
+
+    function resetLayout() {
+        currentLayout = {
+            columns: 3,
+            columnWidths: [1, 1, 1]
+        };
+        updateColumnCount();
+        updateLayoutDisplay();
+    }
+
+    // Initialize customization features
+    function initializeCustomization() {
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // Theme selector
+        const themeSelect = document.getElementById('themeSelect');
+        if (themeSelect) {
+            const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+            themeSelect.value = savedTheme;
+            themeSelect.addEventListener('change', (e) => {
+                applyTheme(e.target.value);
+            });
+        }
+
+        // View toggle
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const view = e.currentTarget.dataset.view;
+                switchView(view);
+            });
+        });
+
+        // Layout editing (admin only)
+        const editLayoutBtn = document.getElementById('editLayoutBtn');
+        if (editLayoutBtn && isAdmin) {
+            editLayoutBtn.style.display = 'block';
+            editLayoutBtn.addEventListener('click', () => {
+                if (editMode) {
+                    exitEditMode();
+                } else {
+                    enterEditMode();
+                }
+            });
+        }
+
+        // Edit controls
+        const addColumnBtn = document.getElementById('addColumn');
+        const removeColumnBtn = document.getElementById('removeColumn');
+        const resetLayoutBtn = document.getElementById('resetLayout');
+        const saveLayoutBtn = document.getElementById('saveLayout');
+        const cancelEditBtn = document.getElementById('cancelEdit');
+
+        if (addColumnBtn) addColumnBtn.addEventListener('click', addColumn);
+        if (removeColumnBtn) removeColumnBtn.addEventListener('click', removeColumn);
+        if (resetLayoutBtn) resetLayoutBtn.addEventListener('click', resetLayout);
+        if (saveLayoutBtn) saveLayoutBtn.addEventListener('click', exitEditMode);
+        if (cancelEditBtn) cancelEditBtn.addEventListener('click', exitEditMode);
+
+        // Set current view
+        switchView(currentView);
+        updateColumnCount();
+    }
 
     // Event Listeners
     loginTab.addEventListener('click', () => {
@@ -57,6 +271,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelTaskBtn.addEventListener('click', closeModal);
     taskForm.addEventListener('submit', handleAddTask);
 
+    // Initialize theme on page load
+    initializeTheme();
+
     // Initialize auth state
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -72,8 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
             if (userDoc.exists()) {
-                const userData = userDoc.data();
-                isAdmin = userData.isAdmin || false;
+                currentUserData = userDoc.data();
+                isAdmin = currentUserData.isAdmin || false;
                 showDashboard();
             }
         } catch (error) {
@@ -89,35 +306,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show dashboard
     function showDashboard() {
-    authModal.style.display = 'none';
-    dashboard.style.display = 'block';
-    addTaskBtn.style.display = isAdmin ? 'block' : 'none';
-    
-    // Display user's name instead of email
-    displayUserName();
-    
-    loadEmployees();
-    loadTasks();
-}
+        authModal.style.display = 'none';
+        dashboard.style.display = 'block';
+        addTaskBtn.style.display = isAdmin ? 'block' : 'none';
+        
+        // Display user's name instead of email
+        displayUserName();
+        
+        // Initialize customization features
+        initializeCustomization();
+        
+        loadEmployees();
+        loadTasks();
+    }
 
-// New function to display user's name
-async function displayUserName() {
-    try {
-        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
-            const userName = userData.name || currentUser.email; // Fallback to email if name not found
-            userWelcome.textContent = `Welcome, ${userName}`;
-        } else {
-            // Fallback to email if user document doesn't exist
+    // Display user's name
+    async function displayUserName() {
+        try {
+            const displayName = currentUserData?.name || currentUser.displayName || currentUser.email;
+            userWelcome.textContent = `Welcome, ${displayName}`;
+        } catch (error) {
+            console.error('Error fetching user name:', error);
             userWelcome.textContent = `Welcome, ${currentUser.email}`;
         }
-    } catch (error) {
-        console.error('Error fetching user name:', error);
-        // Fallback to email in case of error
-        userWelcome.textContent = `Welcome, ${currentUser.email}`;
     }
-}
 
     // Handle login
     async function handleLogin(e) {
@@ -164,7 +376,7 @@ async function displayUserName() {
     // Load employees (admin only)
     async function loadEmployees() {
         if (!isAdmin) return;
-        const q = query(collection(db, 'users'))
+        const q = query(collection(db, 'users'), where('isAdmin', '==', false));
         onSnapshot(q, (snapshot) => {
             employees = [];
             snapshot.forEach((doc) => {
@@ -180,7 +392,7 @@ async function displayUserName() {
         employees.forEach(employee => {
             const option = document.createElement('option');
             option.value = employee.id;
-            option.textContent = employee.name || employee.email; // Fallback to email if name missing
+            option.textContent = employee.name || employee.email;
             taskAssignee.appendChild(option);
         });
     }
@@ -214,6 +426,7 @@ async function displayUserName() {
         let assignedCount = 0;
         let inProgressCount = 0;
         let completedCount = 0;
+        
         tasks.forEach(task => {
             const taskElement = createTaskElement(task);
             switch (task.status) {
@@ -231,6 +444,7 @@ async function displayUserName() {
                     break;
             }
         });
+        
         document.getElementById('assignedCount').textContent = assignedCount;
         document.getElementById('inProgressCount').textContent = inProgressCount;
         document.getElementById('completedCount').textContent = completedCount;
@@ -241,8 +455,11 @@ async function displayUserName() {
         const taskElement = document.createElement('div');
         taskElement.className = 'task-card';
         taskElement.setAttribute('data-task-id', task.id);
+        taskElement.setAttribute('data-status', task.status);
+        
         const assignedEmployee = employees.find(emp => emp.id === task.assignedTo);
         const employeeName = assignedEmployee ? (assignedEmployee.name || assignedEmployee.email) : 'Unknown';
+        
         taskElement.innerHTML = `
             <div class="task-title">${task.title}</div>
             <div class="task-description">${task.description}</div>
@@ -252,6 +469,7 @@ async function displayUserName() {
             </div>
             ${createTaskActions(task)}
         `;
+        
         return taskElement;
     }
 
@@ -285,10 +503,17 @@ async function displayUserName() {
         const title = document.getElementById('taskTitle').value;
         const description = document.getElementById('taskDescription').value;
         const assignedTo = document.getElementById('taskAssignee').value;
+        
         if (!assignedTo) {
             alert('Please select an employee');
             return;
         }
+        
+        // Add loading state
+        const submitButton = e.target.querySelector('[type="submit"]');
+        submitButton.classList.add('loading');
+        submitButton.disabled = true;
+        
         try {
             await addDoc(collection(db, 'tasks'), {
                 title: title,
@@ -301,6 +526,9 @@ async function displayUserName() {
             closeModal();
         } catch (error) {
             alert('Error creating task: ' + error.message);
+        } finally {
+            submitButton.classList.remove('loading');
+            submitButton.disabled = false;
         }
     }
 
