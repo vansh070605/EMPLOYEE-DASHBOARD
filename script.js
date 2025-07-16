@@ -89,13 +89,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show dashboard
     function showDashboard() {
-        authModal.style.display = 'none';
-        dashboard.style.display = 'block';
-        addTaskBtn.style.display = isAdmin ? 'block' : 'none';
+    authModal.style.display = 'none';
+    dashboard.style.display = 'block';
+    addTaskBtn.style.display = isAdmin ? 'block' : 'none';
+    
+    // Display user's name instead of email
+    displayUserName();
+    
+    loadEmployees();
+    loadTasks();
+}
+
+// New function to display user's name
+async function displayUserName() {
+    try {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            const userName = userData.name || currentUser.email; // Fallback to email if name not found
+            userWelcome.textContent = `Welcome, ${userName}`;
+        } else {
+            // Fallback to email if user document doesn't exist
+            userWelcome.textContent = `Welcome, ${currentUser.email}`;
+        }
+    } catch (error) {
+        console.error('Error fetching user name:', error);
+        // Fallback to email in case of error
         userWelcome.textContent = `Welcome, ${currentUser.email}`;
-        loadEmployees();
-        loadTasks();
     }
+}
 
     // Handle login
     async function handleLogin(e) {
