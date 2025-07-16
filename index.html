@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Task Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2>Login</h2>
+            <div class="auth-tabs">
+                <button id="loginTab" class="tab-btn active">Login</button>
+                <button id="signupTab" class="tab-btn">Sign Up</button>
+            </div>
+            
+            <form id="loginForm" class="auth-form">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="isAdmin"> Admin Login
+                </label>
+                <button type="submit">Login</button>
+            </form>
+            
+            <form id="signupForm" class="auth-form" style="display: none;">
+                <input type="text" id="signupName" placeholder="Full Name" required>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="signupIsAdmin"> Register as Admin
+                </label>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard" style="display: none;">
+        <header class="dashboard-header">
+            <h1>Task Dashboard</h1>
+            <div class="header-actions">
+                <span id="userWelcome"></span>
+                <button id="addTaskBtn" class="btn btn-primary" style="display: none;">+ Add Task</button>
+                <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <div class="kanban-board">
+            <div class="kanban-column">
+                <div class="column-header">
+                    <h3>Assigned</h3>
+                    <span class="task-count" id="assignedCount">0</span>
+                </div>
+                <div class="task-list" id="assignedTasks"></div>
+            </div>
+
+            <div class="kanban-column">
+                <div class="column-header">
+                    <h3>In Progress</h3>
+                    <span class="task-count" id="inProgressCount">0</span>
+                </div>
+                <div class="task-list" id="inProgressTasks"></div>
+            </div>
+
+            <div class="kanban-column">
+                <div class="column-header">
+                    <h3>Completed</h3>
+                    <span class="task-count" id="completedCount">0</span>
+                </div>
+                <div class="task-list" id="completedTasks"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Task</h2>
+                <span class="close" id="closeTaskModal">&times;</span>
+            </div>
+            <form id="taskForm">
+                <input type="text" id="taskTitle" placeholder="Task Title" required>
+                <textarea id="taskDescription" placeholder="Task Description" required></textarea>
+                <select id="taskAssignee" required>
+                    <option value="">Select Employee</option>
+                </select>
+                <div class="form-actions">
+                    <button type="button" id="cancelTaskBtn">Cancel</button>
+                    <button type="submit">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import Firebase modules from CDN
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js';
+        import { getFirestore, collection, addDoc, updateDoc, doc, query, where, onSnapshot, setDoc, getDoc, orderBy } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
+        import { firebaseConfig } from './firebase-config.js';
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Expose everything your script.js needs
+        window.firebase = {
+            auth,
+            db,
+            firestore: { collection, addDoc, updateDoc, doc, query, where, onSnapshot, setDoc, getDoc, orderBy },
+            authFunctions: { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut }
+        };
+
+        // Import your main app logic
+        import './script.js';
+    </script>
+</body>
+</html>
