@@ -85,9 +85,11 @@
             <form id="taskForm">
                 <input type="text" id="taskTitle" placeholder="Task Title" required>
                 <textarea id="taskDescription" placeholder="Task Description" required></textarea>
-                <select id="taskAssignee" required>
-                    <option value="">Select Employee</option>
-                </select>
+                <div class="select-wrapper">
+                    <select id="taskAssignee" required>
+                        <option value="">Select Employee</option>
+                    </select>
+                </div>
                 <div class="form-actions">
                     <button type="button" id="cancelTaskBtn">Cancel</button>
                     <button type="submit">Create Task</button>

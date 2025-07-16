@@ -36,18 +36,29 @@ body {
     min-height: 100vh;
 }
 
-/* Modal Styles */
+/* Enhanced Modal Styles */
 .modal {
     display: flex;
     position: fixed;
     z-index: 1000;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    animation: fadeIn 0.3s ease-out;
+    animation: backdropFadeIn 0.3s ease-out;
+}
+
+@keyframes backdropFadeIn {
+    from { 
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    to { 
+        opacity: 1;
+        backdrop-filter: blur(12px);
+    }
 }
 
 @keyframes fadeIn {
@@ -66,36 +77,70 @@ body {
     border: 1px solid var(--medium-gray);
 }
 
+/* Enhanced Add Task Modal */
+#taskModal .modal-content {
+    max-width: 500px;
+    background: var(--white);
+    border: 1px solid var(--medium-gray);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(20px);
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideIn {
+    from { 
+        transform: translateY(30px) scale(0.95); 
+        opacity: 0;
+    }
+    to { 
+        transform: translateY(0) scale(1); 
+        opacity: 1;
+    }
+}
+
 @keyframes slideUp {
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
 
+/* Enhanced Modal Header */
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--medium-gray);
 }
 
 .modal-header h2 {
     color: var(--dark-color);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .close {
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--text-light);
-    transition: var(--transition);
+    transition: all 0.2s ease;
     padding: 0.5rem;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
 }
 
 .close:hover {
     color: var(--danger-color);
     background: rgba(248, 113, 113, 0.1);
+    transform: scale(1.1);
 }
 
 /* Auth Form Styles */
@@ -456,36 +501,192 @@ body {
     box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
 }
 
-/* Form Styles */
+/* Enhanced Task Form Styles */
+#taskForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Enhanced Form Labels */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark-color);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-label::after {
+    content: " *";
+    color: var(--danger-color);
+}
+
+/* Enhanced Form Fields */
+#taskTitle {
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#taskTitle:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+    background: rgba(102, 126, 234, 0.02);
+}
+
+#taskTitle::placeholder {
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+#taskDescription {
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    resize: vertical;
+    min-height: 120px;
+    background: var(--white);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    line-height: 1.6;
+}
+
+#taskDescription:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+    background: rgba(102, 126, 234, 0.02);
+}
+
+#taskDescription::placeholder {
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+/* Enhanced Select Dropdown */
+#taskAssignee {
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 1rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25em 1.25em;
+    padding-right: 3rem;
+}
+
+#taskAssignee:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+    background-color: rgba(102, 126, 234, 0.02);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+#taskAssignee:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+#taskAssignee:disabled {
+    background-color: var(--light-gray);
+    color: var(--text-light);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#taskAssignee option {
+    padding: 0.75rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+#taskAssignee:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Enhanced Form Actions */
 .form-actions {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
     margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--medium-gray);
 }
 
 .form-actions button {
-    padding: 0.75rem 1.5rem;
+    padding: 0.875rem 2rem;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
     font-weight: 600;
-    transition: var(--transition);
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    min-width: 120px;
+}
+
+.form-actions button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.form-actions button:hover::before {
+    left: 100%;
 }
 
 .form-actions button[type="button"] {
-    background: var(--medium-gray);
+    background: linear-gradient(135deg, var(--medium-gray), #d1d5db);
     color: var(--text-dark);
+    border: 1px solid var(--medium-gray);
 }
 
 .form-actions button[type="button"]:hover {
-    background: var(--text-light);
+    background: linear-gradient(135deg, var(--text-light), var(--text-dark));
     color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(100, 116, 139, 0.3);
 }
 
 .form-actions button[type="submit"] {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: var(--white);
+    border: 1px solid var(--primary-color);
 }
 
 .form-actions button[type="submit"]:hover {
@@ -493,37 +694,68 @@ body {
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
-#taskDescription {
-    padding: 1rem;
-    border: 2px solid var(--medium-gray);
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    font-family: inherit;
-    resize: vertical;
-    min-height: 120px;
-    transition: var(--transition);
+.form-actions button[type="submit"]:active {
+    transform: translateY(0) scale(0.98);
 }
 
-#taskDescription:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+/* Loading State for Submit Button */
+.form-actions button[type="submit"].loading {
+    pointer-events: none;
+    position: relative;
+    color: transparent;
 }
 
-#taskAssignee {
-    padding: 1rem;
-    border: 2px solid var(--medium-gray);
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    font-family: inherit;
-    background: var(--white);
-    transition: var(--transition);
+.form-actions button[type="submit"].loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    border: 2px solid var(--white);
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
-#taskAssignee:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+/* Field States */
+.form-field.error input,
+.form-field.error textarea,
+.form-field.error select {
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1);
+}
+
+.form-field.success input,
+.form-field.success textarea,
+.form-field.success select {
+    border-color: var(--success-color);
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+/* Form Messages */
+.form-message {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    display: none;
+}
+
+.form-message.error {
+    color: var(--danger-color);
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    display: block;
+}
+
+.form-message.success {
+    color: var(--success-color);
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    display: block;
 }
 
 /* Responsive Design */
@@ -553,12 +785,39 @@ body {
         margin: 1rem;
     }
     
+    #taskModal .modal-content {
+        margin: 1rem;
+        padding: 1.5rem;
+        max-width: none;
+    }
+    
     .task-card {
         padding: 1rem;
     }
     
     .task-actions {
         flex-direction: column;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .form-actions button {
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    #taskDescription {
+        min-height: 100px;
+    }
+    
+    #taskAssignee {
+        font-size: 16px; /* Prevents zoom on iOS */
+        background-size: 1em 1em;
+        background-position: right 0.75rem center;
+        padding-right: 2.5rem;
     }
 }
 
