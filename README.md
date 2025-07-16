@@ -1,16 +1,4 @@
-I can see there are some issues with the badge URLs and missing sections in your README. Here's the corrected and complete version:
-
 # 🚀 EMPLOYEE DASHBOARD
-
-
-
-[![GitHub Repository](https://img.shields.io/badge/GitHub-EMPLOYEE--DASHBOARD-blue?style](https://img.shields.io/badge/Firebase-9.22.2-orange?style=for-the-badge&logo=firebaseshields.io/badge/JavaScript-ES6+-yellow?style=for-the-badge&logo=javascript.shields.io/badge/CSS3-Latest-blue?style= management solution built with vanilla JavaScript and Firebase*
-
-**Created by [Vansh](https://github.com/vansh070605)**
-
-
-
-## ✨ Overview
 
 The **EMPLOYEE DASHBOARD** is a sleek, modern web application designed for efficient task management in small to medium-sized teams. Built with vanilla JavaScript and powered by Firebase, it offers real-time collaboration, role-based access control, and an intuitive Kanban-style interface.
 
@@ -265,12 +253,4 @@ Need help? Here's how to get support:
 
 Give a ⭐ if this project helped you!
 
-[![GitHub stars](https://img.shields.io/github/stars/vansh070605/EMPLOYEE-DASHBOARDgithub.com/vansh070605/EMPLOYEE-DASHBOARD/networkE-DASHBOARD/(https://github.com/vansh070605)
-
 **Happy Task Managing!** 🎯
-
-*This Employee Dashboard was created on July 16, 2025*
-
-
-
-[1] https://img.shields.io/badge/GitHub-EMPLOYEE--DASHBOARD-blue?styles%3A%2F%2Fimg.shields.io%2Fbadge%2FFirebase-9.22.2-orange%3Fstyleps%3A%2F%2Fimg.shields.iome
