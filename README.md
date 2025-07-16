@@ -1,5 +1,3 @@
-Perfect! I'll update the README file with your specific GitHub repository information and personalize it for you, Vansh.
-
 # 🚀 EMPLOYEE DASHBOARD
 
 
