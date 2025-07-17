@@ -100,16 +100,4 @@ service cloud.firestore {
 4. Push to branch (`git push origin feature/new-feature`)
 5. Open Pull Request
 
-## 📞 Support
-
-- **Live Demo:** [kanban-employee-dashboard.vercel.app](https://kanban-employee-dashboard.vercel.app/)
-- **Issues:** GitHub Issues tab
-- **Email:** Contact via GitHub profile
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
----
-
 ⭐ **Star this repo if it helped you!**
