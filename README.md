@@ -3,7 +3,9 @@
 A modern, real-time task management application with role-based access control. Built with vanilla JavaScript and Firebase for efficient team collaboration.
 
 ## 🌐 Live Demo
-**[View Live Application](https://kanban-employee-dashboard.vercel.app/)**
+<a href="https://kanban-employee-dashboard.vercel.app/" target="_blank">
+  <img src="https://img.shields.io/badge/🚀%20Live%20Demo-View%20Application-blue?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo">
+</a>
 
 ## ✨ Features
 
