@@ -1,6 +1,3 @@
-Here's the complete README.md code:
-
-```markdown
 # 🚀 Employee Task Dashboard
 
 A modern, real-time task management application with role-based access control. Built with vanilla JavaScript and Firebase for efficient team collaboration.
@@ -123,12 +120,3 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ---
 
 ⭐ **Star this repo if it helped you!**
-```
-
-Simply copy and paste this entire code block into your `README.md` file. Make sure to:
-
-1. Replace `your-username` in the clone URL with your actual GitHub username
-2. Update any other specific details if needed
-3. Save the file as `README.md` in your project root directory
-
-This README includes your live demo link prominently and provides all the essential information in a clean, professional format.
