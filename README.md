@@ -24,7 +24,7 @@ A modern, real-time task management application with role-based access control. 
 
 1. **Clone the repository**
    ```
-   git clone https://github.com/your-username/employee-task-dashboard.git
+   git clone https://github.com/vansh070605/EMPLOYEE-DASHBOARD.git
    cd employee-task-dashboard
    ```
 
@@ -89,15 +89,6 @@ service cloud.firestore {
 2. **Admin:** Create tasks and assign to employees
 3. **Employee:** View tasks and update status
 4. **Monitor:** Real-time progress on Kanban board
-
-## 🚀 Deployment
-
-Deployed on **Vercel** with automatic deployments from main branch.
-
-**Local deployment:**
-- Any static file server
-- Firebase Hosting
-- Netlify/Vercel
 
 ## 🤝 Contributing
 
