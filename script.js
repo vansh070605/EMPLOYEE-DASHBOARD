@@ -82,6 +82,112 @@ document.addEventListener('DOMContentLoaded', () => {
     const { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } = authFunctions;
     const { collection, addDoc, updateDoc, doc, query, where, onSnapshot, setDoc, getDoc, orderBy } = firestore;
 
+    // Enhanced Auth UI functionality
+    function initializeEnhancedAuth() {
+        // Tab switching
+        loginTab.addEventListener('click', () => switchAuthTab('login'));
+        signupTab.addEventListener('click', () => switchAuthTab('signup'));
+        
+        // Password toggle functionality
+        document.querySelectorAll('.password-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const passwordInput = document.getElementById(targetId);
+                const eyeOpen = this.querySelector('.eye-open');
+                const eyeClosed = this.querySelector('.eye-closed');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeOpen.style.display = 'none';
+                    eyeClosed.style.display = 'block';
+                } else {
+                    passwordInput.type = 'password';
+                    eyeOpen.style.display = 'block';
+                    eyeClosed.style.display = 'none';
+                }
+            });
+        });
+        
+        // Password strength indicator
+        const signupPassword = document.getElementById('signupPassword');
+        const strengthFill = document.querySelector('.strength-fill');
+        const strengthText = document.querySelector('.strength-text');
+        
+        if (signupPassword && strengthFill && strengthText) {
+            signupPassword.addEventListener('input', function() {
+                const password = this.value;
+                const strength = calculatePasswordStrength(password);
+                
+                strengthFill.style.width = strength.percentage + '%';
+                strengthText.textContent = strength.text;
+                strengthText.style.color = strength.color;
+            });
+        }
+        
+        // Enhanced input animations
+        document.querySelectorAll('.input-wrapper input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+    }
+
+    function switchAuthTab(tab) {
+        if (tab === 'login') {
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            loginForm.classList.add('active');
+            signupForm.classList.remove('active');
+        } else {
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            signupForm.classList.add('active');
+            loginForm.classList.remove('active');
+        }
+    }
+
+    function calculatePasswordStrength(password) {
+        let score = 0;
+        let feedback = '';
+        
+        if (password.length >= 8) score += 20;
+        if (/[a-z]/.test(password)) score += 20;
+        if (/[A-Z]/.test(password)) score += 20;
+        if (/[0-9]/.test(password)) score += 20;
+        if (/[^A-Za-z0-9]/.test(password)) score += 20;
+        
+        if (score < 40) {
+            feedback = 'Weak';
+            return { percentage: score, text: feedback, color: 'var(--danger-color)' };
+        } else if (score < 80) {
+            feedback = 'Fair';
+            return { percentage: score, text: feedback, color: 'var(--warning-color)' };
+        } else {
+            feedback = 'Strong';
+            return { percentage: score, text: feedback, color: 'var(--success-color)' };
+        }
+    }
+
+    function showLoadingState(form, show) {
+        const submitBtn = form.querySelector('.submit-btn');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnLoader = submitBtn.querySelector('.btn-loader');
+        
+        if (show) {
+            submitBtn.disabled = true;
+            btnText.style.opacity = '0';
+            btnLoader.style.display = 'block';
+        } else {
+            submitBtn.disabled = false;
+            btnText.style.opacity = '1';
+            btnLoader.style.display = 'none';
+        }
+    }
+
     // Theme Management
     function initializeTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
@@ -248,31 +354,46 @@ document.addEventListener('DOMContentLoaded', () => {
         updateColumnCount();
     }
 
-    // Event Listeners
-    loginTab.addEventListener('click', () => {
-        loginTab.classList.add('active');
-        signupTab.classList.remove('active');
-        loginForm.style.display = 'flex';
-        signupForm.style.display = 'none';
+    // Enhanced form submission with loading states
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        showLoadingState(loginForm, true);
+        
+        try {
+            await handleLogin(e);
+        } finally {
+            showLoadingState(loginForm, false);
+        }
     });
 
-    signupTab.addEventListener('click', () => {
-        signupTab.classList.add('active');
-        loginTab.classList.remove('active');
-        loginForm.style.display = 'none';
-        signupForm.style.display = 'flex';
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        showLoadingState(signupForm, true);
+        
+        try {
+            await handleSignup(e);
+        } finally {
+            showLoadingState(signupForm, false);
+        }
     });
 
-    loginForm.addEventListener('submit', handleLogin);
-    signupForm.addEventListener('submit', handleSignup);
+    // Other event listeners
     logoutBtn.addEventListener('click', handleLogout);
     addTaskBtn.addEventListener('click', showAddTaskModal);
     closeTaskModal.addEventListener('click', closeModal);
     cancelTaskBtn.addEventListener('click', closeModal);
     taskForm.addEventListener('submit', handleAddTask);
 
-    // Initialize theme on page load
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === taskModal) {
+            closeModal();
+        }
+    });
+
+    // Initialize theme and enhanced auth on page load
     initializeTheme();
+    initializeEnhancedAuth();
 
     // Initialize auth state
     onAuthStateChanged(auth, (user) => {
@@ -333,23 +454,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle login
     async function handleLogin(e) {
-        e.preventDefault();
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
+        
         try {
             await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
             alert('Login failed: ' + error.message);
+            throw error; // Re-throw to be caught by the loading state handler
         }
     }
 
     // Handle signup
     async function handleSignup(e) {
-        e.preventDefault();
         const name = document.getElementById('signupName').value;
         const email = document.getElementById('signupEmail').value;
         const password = document.getElementById('signupPassword').value;
         const adminRole = signupIsAdmin.checked;
+        
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await setDoc(doc(db, 'users', userCredential.user.uid), {
@@ -360,6 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } catch (error) {
             alert('Signup failed: ' + error.message);
+            throw error; // Re-throw to be caught by the loading state handler
         }
     }
 
@@ -423,31 +546,31 @@ document.addEventListener('DOMContentLoaded', () => {
         assignedTasks.innerHTML = '';
         inProgressTasks.innerHTML = '';
         completedTasks.innerHTML = '';
-        let assignedCount = 0;
-        let inProgressCount = 0;
-        let completedCount = 0;
+        let assignedTaskCount = 0;
+        let inProgressTaskCount = 0;
+        let completedTaskCount = 0;
         
         tasks.forEach(task => {
             const taskElement = createTaskElement(task);
             switch (task.status) {
                 case 'assigned':
                     assignedTasks.appendChild(taskElement);
-                    assignedCount++;
+                    assignedTaskCount++;
                     break;
                 case 'in_progress':
                     inProgressTasks.appendChild(taskElement);
-                    inProgressCount++;
+                    inProgressTaskCount++;
                     break;
                 case 'completed':
                     completedTasks.appendChild(taskElement);
-                    completedCount++;
+                    completedTaskCount++;
                     break;
             }
         });
         
-        document.getElementById('assignedCount').textContent = assignedCount;
-        document.getElementById('inProgressCount').textContent = inProgressCount;
-        document.getElementById('completedCount').textContent = completedCount;
+        document.getElementById('assignedCount').textContent = assignedTaskCount;
+        document.getElementById('inProgressCount').textContent = inProgressTaskCount;
+        document.getElementById('completedCount').textContent = completedTaskCount;
     }
 
     // Create task card element

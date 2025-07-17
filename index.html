@@ -5,35 +5,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Task Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Auth Modal -->
+    <!-- Enhanced Auth Modal -->
     <div id="authModal" class="modal">
-        <div class="modal-content">
-            <h2>Login</h2>
-            <div class="auth-tabs">
-                <button id="loginTab" class="tab-btn active">Login</button>
-                <button id="signupTab" class="tab-btn">Sign Up</button>
+        <div class="auth-container">
+            <div class="auth-background">
+                <div class="background-shape shape-1"></div>
+                <div class="background-shape shape-2"></div>
+                <div class="background-shape shape-3"></div>
             </div>
             
-            <form id="loginForm" class="auth-form">
-                <input type="email" id="loginEmail" placeholder="Email" required>
-                <input type="password" id="loginPassword" placeholder="Password" required>
-                <label class="checkbox-label">
-                    <input type="checkbox" id="isAdmin"> Admin Login
-                </label>
-                <button type="submit">Login</button>
-            </form>
-            
-            <form id="signupForm" class="auth-form" style="display: none;">
-                <input type="text" id="signupName" placeholder="Full Name" required>
-                <input type="email" id="signupEmail" placeholder="Email" required>
-                <input type="password" id="signupPassword" placeholder="Password" required>
-                <label class="checkbox-label">
-                    <input type="checkbox" id="signupIsAdmin"> Register as Admin
-                </label>
-                <button type="submit">Sign Up</button>
-            </form>
+            <div class="auth-content">
+                <div class="auth-header">
+                    <div class="logo">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h1>Task Dashboard</h1>
+                    <p class="subtitle">Manage your tasks efficiently</p>
+                </div>
+                
+                <div class="auth-tabs">
+                    <button id="loginTab" class="tab-btn active" data-tab="login">
+                        <span>Login</span>
+                    </button>
+                    <button id="signupTab" class="tab-btn" data-tab="signup">
+                        <span>Sign Up</span>
+                    </button>
+                </div>
+                
+                <div class="auth-forms">
+                    <form id="loginForm" class="auth-form active">
+                        <div class="form-group">
+                            <label for="loginEmail">Email Address</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                    <circle cx="12" cy="16" r="1"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                                <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                                <button type="button" class="password-toggle" data-target="loginPassword">
+                                    <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                    <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                        <line x1="1" y1="1" x2="23" y2="23"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="isAdmin">
+                                <span class="checkmark"></span>
+                                <span class="checkbox-text">Login as Administrator</span>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Sign In</span>
+                            <div class="btn-loader" style="display: none;">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+                        
+                        <div class="auth-footer">
+                            <a href="#" class="forgot-password">Forgot Password?</a>
+                        </div>
+                    </form>
+                    
+                    <form id="signupForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="signupName">Full Name</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                <input type="text" id="signupName" placeholder="Enter your full name" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signupEmail">Email Address</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                    <circle cx="12" cy="16" r="1"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                                <input type="password" id="signupPassword" placeholder="Create a password" required>
+                                <button type="button" class="password-toggle" data-target="signupPassword">
+                                    <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                    <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                        <line x1="1" y1="1" x2="23" y2="23"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill"></div>
+                                </div>
+                                <span class="strength-text">Password strength</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="signupIsAdmin">
+                                <span class="checkmark"></span>
+                                <span class="checkbox-text">Register as Administrator</span>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Create Account</span>
+                            <div class="btn-loader" style="display: none;">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+                        
+                        <div class="auth-footer">
+                            <p class="terms-text">By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
